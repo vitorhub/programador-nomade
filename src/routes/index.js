@@ -1,14 +1,20 @@
 import { Router } from 'express';
-import { getAll, createUser } from '../controllers/usuario.controller';
+import VerififyToken from '../middleware/usuarios.middleware';
+import { requestLogin } from '../models/usuario.model';
+import {
+  getAll, createUser, deleteUser, updateUser,
+} from '../controllers/usuario.controller';
 
-const routes = new Router(); // instancia router() permite usar o get para chamar a rota
+const routes = new Router();
 
 routes.get('/', (req, res) => {
-    res.status(200).json({ ok: 'connected' });
-})
+  res.status(200).json({ ok: 'conected' });
+});
 
-routes.get('/usuario', getAll);
-
-routes.post('/usuario', createUser);
+routes.get('/usuario', VerififyToken, getAll);
+routes.get('/login', requestLogin);
+routes.post('/usuario', VerififyToken, createUser);
+routes.delete('/usuario/:id', VerififyToken, deleteUser); // Rota usuario/:id executa deleteUser em controller
+routes.put('/usuario/:id', VerififyToken, updateUser);
 
 export default routes;
